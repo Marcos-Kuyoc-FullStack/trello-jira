@@ -27,8 +27,8 @@ export const UIProvider = ({children}: Props) => {
   return (
     <UIContext.Provider value={{
       ...state,
-      openSideMenu,
-      closeSideMenu
+      closeSideMenu,
+      openSideMenu
     }}>
       {children}
     </UIContext.Provider>
