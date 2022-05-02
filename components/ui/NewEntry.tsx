@@ -17,6 +17,9 @@ export const NewEntry = () => {
   const onSave = () => {
     if (inputValue.length === 0) return;
     addNewEntry(inputValue)
+    setIsAddig(false)
+    setTouched(false)
+    setInputValue('')
   }
 
   return (
