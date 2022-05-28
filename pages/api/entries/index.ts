@@ -17,8 +17,8 @@ export default function handler(
   switch (req.method) {
     case 'GET':
       return getEntries(res)
-      case 'POST':
-        return createEntries(req, res)
+    case 'POST':
+      return createEntries(req, res)
     default:
       res.status(400).json({ message: 'Endpoint not Exist' })
   }  
@@ -37,18 +37,21 @@ const createEntries = async (req: NextApiRequest,res: NextApiResponse<Data>) =>{
   const newEntry = new Entry(
     {
       description,
-      createdAt: new Date()
+      createdAt: Date.now()
     }
   )
-  try {
-    
+
+  try {  
     await db.connect();
     await newEntry.save()
     await db.disconnect();
     res.status(201).json(newEntry)
   } catch (error) {
-    res.status(400).json({
-      message: 'error'
+    await db.disconnect();
+    console.error(error)
+
+    res.status(500).json({
+      message: 'Algo salio mal, revisar consola del servidor'
     })
   }
 }

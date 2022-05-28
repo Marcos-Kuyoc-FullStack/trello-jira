@@ -19,19 +19,23 @@ const Entries_INITIAL_STATE:EntriesState = {
 export const EntriesProvider = ({children}: Props) => {
   const [state, dispatch] = useReducer(entriesReducer, Entries_INITIAL_STATE)
 
-  const addNewEntry = (description: string) => {
-    const newEntry: Entry = {
-      _id: uuidv4(),
-      description,
-      createdAt: Date.now(),
-      status: 'pending'
+  const addNewEntry = async (description: string) => {
+    try {
+      const {data} =  await entriesApi.post<Entry>('/entries', {description})
+  
+      dispatch({type: '[Entry] Add-Entry', payload: data})
+    } catch (error: any) {
+      console.error(error.message);
     }
-
-    dispatch({type: '[Entry] Add-Entry', payload: newEntry})
   }
 
-  const updteEntry = (entry: Entry) => {
-    dispatch({type: '[Entry] Entry-Updated', payload: entry})
+  const updateEntry = async({_id, description, status}: Entry) => {
+    try {
+      const {data} =  await entriesApi.put<Entry>(`/entries/${_id}`, {description, status})
+      dispatch({type: '[Entry] Entry-Updated', payload: data})
+    } catch (error: any) {
+      console.error(error.message);
+    }
   }
   const refreshEntries = async () => {
     const {data} = await entriesApi.get<Entry[]>('/entries');
@@ -48,7 +52,7 @@ export const EntriesProvider = ({children}: Props) => {
       ...state,
       //methods
       addNewEntry,
-      updteEntry
+      updateEntry
     }}>
       {children}
     </EntriesContext.Provider>
