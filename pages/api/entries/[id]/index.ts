@@ -1,8 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import mongoose from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { db } from '../../../app/datasources'
-import { Entry, IEntry } from '../../../app/models'
+import { db } from '../../../../app/datasources'
+import { Entry, IEntry } from '../../../../app/models'
 
 type Data = 
   | {message: string}
@@ -12,12 +11,6 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const {id} = req.query;
-
-  if (!mongoose.isValidObjectId(id)) {
-    return res.status(400).json({message: 'El id no es válido'})
-  }
-  
   switch (req.method) {
     case 'GET': 
       return getEntry(req, res)
