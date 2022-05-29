@@ -16,6 +16,8 @@ export default function handler(
       return getEntry(req, res)
     case 'PUT':
       return updateEntries(req, res)
+    case 'DELETE':
+      return deleteEntries(req, res)
     default:
       res.status(400).json({ message: 'Método no existe' })
   }
@@ -45,7 +47,6 @@ const getEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   return res.status(200).json(entry)
 }
 
-
 const updateEntries = async (req: NextApiRequest,res: NextApiResponse<Data>) => {
   const {id} = req.query;
 
@@ -72,4 +73,25 @@ const updateEntries = async (req: NextApiRequest,res: NextApiResponse<Data>) => 
       message: error.errors.status.message
     })
   }
+}
+
+const deleteEntries = async(req: NextApiRequest, res: NextApiResponse<Data>) => {
+  const {id} = req.query;
+  let entry;
+
+  try {
+    await db.connect();
+    entry = await Entry.findByIdAndDelete(id)
+    console.log(`Entrada eliminada ${id}`)
+    await db.disconnect();
+  } catch (error) {
+    await db.disconnect();
+    console.error(error)
+
+    res.status(500).json({
+      message: 'Algo salio mal, revisar consola del servidor'
+    })
+  }
+
+  return res.status(200).json({message: `Entrada eliminada ${id}`})
 }
