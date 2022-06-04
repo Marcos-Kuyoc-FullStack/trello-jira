@@ -1,0 +1,1 @@
+export * as dbEntries  from './entries'

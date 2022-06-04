@@ -4,12 +4,16 @@ import { UIContext, uiReducer } from './';
 
 export interface UIState {
   sideMenuOpen: boolean;
+  isAddingEntry: boolean;
+  isDragging: boolean,
 }
 interface Props{
   children: ReactNode
 }
 const UI_INITIAL_STATE: UIState = {
-  sideMenuOpen: false
+  sideMenuOpen: false,
+  isAddingEntry: false,
+  isDragging: false,
 }
 
 
@@ -24,11 +28,26 @@ export const UIProvider = ({children}: Props) => {
     dispatch({type: 'UI - Close Sidebar'})
   }
 
+  const setIsAddingEntry = (isAdding: boolean) => {
+    dispatch({type: 'UI - Set isAddingEntry', payload: isAdding})
+  }
+
+  const startDragging = () => {
+    dispatch({type: 'UI - Start Dragging'})
+  }
+
+  const endDragging = () => {
+    dispatch({type: 'UI - End Dragging'})
+  }
+
   return (
     <UIContext.Provider value={{
       ...state,
       closeSideMenu,
-      openSideMenu
+      openSideMenu,
+      setIsAddingEntry,
+      startDragging,
+      endDragging
     }}>
       {children}
     </UIContext.Provider>
